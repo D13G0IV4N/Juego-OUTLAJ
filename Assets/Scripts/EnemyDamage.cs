@@ -1,31 +1,74 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 
 public class EnemyDamage : MonoBehaviour
 {
+    [Header("Damage")]
+    [SerializeField] private float damageCooldown = 1f;
+    [SerializeField] private bool attackWindowActiveOnStart;
+
     private bool canDamage = true;
+    private bool isAttackWindowActive;
+
+    private void Awake()
+    {
+        isAttackWindowActive = attackWindowActiveOnStart;
+    }
+
+    public void BeginAttackWindow()
+    {
+        isAttackWindowActive = true;
+        canDamage = true;
+    }
+
+    public void EndAttackWindow()
+    {
+        isAttackWindowActive = false;
+    }
+
+    private void OnDisable()
+    {
+        CancelInvoke(nameof(ResetDamage));
+        isAttackWindowActive = false;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        TryDealDamage(other);
+    }
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && canDamage)
+        TryDealDamage(other);
+    }
+
+    private void TryDealDamage(Collider2D other)
+    {
+        if (!isAttackWindowActive || !canDamage || !other.CompareTag("Player"))
         {
-            Debug.Log("El enemigo hizo daño");
+            return;
+        }
 
-            LifeManager lifeManager = FindObjectOfType<LifeManager>();
+        Debug.Log("El enemigo hizo daño");
 
-            if (lifeManager != null)
-            {
-                lifeManager.LoseLife();
-            }
+        LifeManager lifeManager = FindObjectOfType<LifeManager>();
+        if (lifeManager != null)
+        {
+            lifeManager.LoseLife();
+        }
 
-            canDamage = false;
-            Invoke(nameof(ResetDamage), 1f);
+        canDamage = false;
+
+        if (damageCooldown <= 0f)
+        {
+            ResetDamage();
+        }
+        else
+        {
+            Invoke(nameof(ResetDamage), damageCooldown);
         }
     }
 
-    void ResetDamage()
+    private void ResetDamage()
     {
         canDamage = true;
     }
