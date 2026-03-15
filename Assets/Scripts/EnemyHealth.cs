@@ -5,8 +5,12 @@ public class EnemyHealth : MonoBehaviour
     [Header("Health")]
     [SerializeField] private int maxHealth = 5;
 
+    [Header("Hit Reaction")]
+    [SerializeField] private string hitTriggerName = "Hit";
+    [SerializeField] private string hitStateName = "";
+
     [Header("Death Animation")]
-    [SerializeField] private string deathTriggerName = "";
+    [SerializeField] private string deathTriggerName = "Lose";
     [SerializeField] private string deathStateName = "Enemy_Kwesi_Lose";
     [SerializeField] private float disableCollidersDelay = 0.05f;
 
@@ -62,7 +66,10 @@ public class EnemyHealth : MonoBehaviour
         if (currentHealth == 0)
         {
             Die();
+            return;
         }
+
+        PlayHitReaction();
     }
 
     private void Die()
@@ -103,7 +110,7 @@ public class EnemyHealth : MonoBehaviour
             return;
         }
 
-        if (!string.IsNullOrWhiteSpace(deathTriggerName))
+        if (HasAnimatorTrigger(deathTriggerName))
         {
             enemyAnimator.SetTrigger(deathTriggerName);
         }
@@ -112,6 +119,45 @@ public class EnemyHealth : MonoBehaviour
         {
             enemyAnimator.Play(deathStateName, 0, 0f);
         }
+
+        Debug.Log($"{name} died.");
+    }
+
+    private void PlayHitReaction()
+    {
+        if (enemyAnimator == null)
+        {
+            return;
+        }
+
+        if (HasAnimatorTrigger(hitTriggerName))
+        {
+            enemyAnimator.SetTrigger(hitTriggerName);
+        }
+
+        if (!string.IsNullOrWhiteSpace(hitStateName))
+        {
+            enemyAnimator.Play(hitStateName, 0, 0f);
+        }
+    }
+
+    private bool HasAnimatorTrigger(string triggerName)
+    {
+        if (enemyAnimator == null || string.IsNullOrWhiteSpace(triggerName))
+        {
+            return false;
+        }
+
+        AnimatorControllerParameter[] parameters = enemyAnimator.parameters;
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            if (parameters[i].type == AnimatorControllerParameterType.Trigger && parameters[i].name == triggerName)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void DisableOffensiveBehaviour()
