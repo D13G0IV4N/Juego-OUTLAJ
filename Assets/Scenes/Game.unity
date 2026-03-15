@@ -815,7 +815,7 @@ Animator:
   m_GameObject: {fileID: 444157976}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 859f56f7594953a4a958c7e6fb0213e9, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2367,7 +2367,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f22540f241fdf02448ce12b90332a517, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerInRange: 0
 --- !u!61 &857569856
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2400,7 +2399,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 1, y: -1.1737727}
+  m_Offset: {x: 0.7, y: -1.1737727}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -2411,7 +2410,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3, y: 3}
+  m_Size: {x: 2.5, y: 3}
   m_EdgeRadius: 0
 --- !u!1001 &957778962
 PrefabInstance:
@@ -2431,19 +2430,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2156123483828537367, guid: 84efa92ea10ca7672b390d53af1c89d0, type: 3}
       propertyPath: m_LocalScale.x
-      value: -0.8267
+      value: -0.6797954
       objectReference: {fileID: 0}
     - target: {fileID: 2156123483828537367, guid: 84efa92ea10ca7672b390d53af1c89d0, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.83077955
+      value: 0.7467877
       objectReference: {fileID: 0}
     - target: {fileID: 2156123483828537367, guid: 84efa92ea10ca7672b390d53af1c89d0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -13
+      value: 132.27
       objectReference: {fileID: 0}
     - target: {fileID: 2156123483828537367, guid: 84efa92ea10ca7672b390d53af1c89d0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.9696
+      value: -3.12
       objectReference: {fileID: 0}
     - target: {fileID: 2156123483828537367, guid: 84efa92ea10ca7672b390d53af1c89d0, type: 3}
       propertyPath: m_LocalPosition.z
