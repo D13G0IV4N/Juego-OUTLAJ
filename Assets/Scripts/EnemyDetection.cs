@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 
 public class EnemyDetection : MonoBehaviour
 {
@@ -17,7 +14,17 @@ public class EnemyDetection : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             Debug.Log("Jugador detectado");
-            enemyAnimator.SetTrigger("Attack");
+
+            int randomAttack = Random.Range(0, 2);
+
+            if (randomAttack == 0)
+            {
+                enemyAnimator.SetTrigger("Attack");
+            }
+            else
+            {
+                enemyAnimator.SetTrigger("Attack2");
+            }
         }
     }
 
