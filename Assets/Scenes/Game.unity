@@ -891,6 +891,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 5
+  hitTriggerName: Hit
+  hitStateName: 
   deathTriggerName: 
   deathStateName: Enemy_Kwesi_Lose
   disableCollidersDelay: 0.05
@@ -2479,6 +2481,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f22540f241fdf02448ce12b90332a517, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attackInterval: 1.1
+  attackWindUp: 0.2
+  attackActiveDuration: 0.25
+  enemyDamageWindows:
+  - {fileID: 1341505400}
 --- !u!61 &857569856
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2550,11 +2557,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2156123483828537367, guid: 84efa92ea10ca7672b390d53af1c89d0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -12.43
+      value: 132.41
       objectReference: {fileID: 0}
     - target: {fileID: 2156123483828537367, guid: 84efa92ea10ca7672b390d53af1c89d0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.96
+      value: -3.15
       objectReference: {fileID: 0}
     - target: {fileID: 2156123483828537367, guid: 84efa92ea10ca7672b390d53af1c89d0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -3397,6 +3404,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cc2af96336ca5d4abb2a01296ce6c54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damageCooldown: 1
+  attackWindowActiveOnStart: 0
 --- !u!61 &1341505401
 BoxCollider2D:
   m_ObjectHideFlags: 0
