@@ -49,6 +49,18 @@ public class LifeManager : MonoBehaviour
         }
     }
 
+    public bool RestoreLife()
+    {
+        if (isGameOver || currentLives >= maxLives)
+        {
+            return false;
+        }
+
+        currentLives++;
+        UpdateHearts();
+        return true;
+    }
+
     void UpdateHearts()
     {
         for (int i = 0; i < hearts.Length; i++)
