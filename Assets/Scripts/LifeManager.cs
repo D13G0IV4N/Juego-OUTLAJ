@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Video;
 using UnityEngine.SceneManagement;
 
+
 public class LifeManager : MonoBehaviour
 {
     public Image[] hearts;
@@ -38,7 +39,8 @@ public class LifeManager : MonoBehaviour
 
     public void LoseLife()
     {
-        if (currentLives <= 0 || isGameOver) return;
+        if (currentLives <= 0 || isGameOver)
+            return;
 
         currentLives--;
         UpdateHearts();
@@ -52,9 +54,7 @@ public class LifeManager : MonoBehaviour
     public bool RestoreLife()
     {
         if (isGameOver || currentLives >= maxLives)
-        {
             return false;
-        }
 
         currentLives++;
         UpdateHearts();
