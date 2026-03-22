@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
@@ -30,6 +31,8 @@ public class EnemyHealth : MonoBehaviour
     public int CurrentHealth => currentHealth;
     public int MaxHealth => maxHealth;
     public bool IsDead => isDead;
+
+    public event Action<EnemyHealth> Died;
 
     private void Awake()
     {
@@ -92,6 +95,7 @@ public class EnemyHealth : MonoBehaviour
         }
 
         PlayDeathAnimation();
+        Died?.Invoke(this);
 
         if (disableCollidersDelay <= 0f)
         {
