@@ -32,6 +32,7 @@ public class EnemyHealth : MonoBehaviour
     public int MaxHealth => maxHealth;
     public bool IsDead => isDead;
 
+    public event Action<EnemyHealth> Damaged;
     public event Action<EnemyHealth> Died;
 
     private void Awake()
@@ -73,6 +74,7 @@ public class EnemyHealth : MonoBehaviour
         }
 
         PlayHitReaction();
+        Damaged?.Invoke(this);
     }
 
     private void Die()
