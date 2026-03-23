@@ -5,9 +5,6 @@ using UnityEngine.UI;
 using System.Collections;
 
 
-
-
-
 public class EnemyDefeatSceneTransition : MonoBehaviour
 {
     [Header("Trigger")]
