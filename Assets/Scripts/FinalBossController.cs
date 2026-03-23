@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 
-
 [RequireComponent(typeof(EnemyHealth))]
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(SpriteRenderer))]
@@ -14,8 +13,7 @@ public class FinalBossController : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 2.25f;
     [SerializeField] private float activationRange = 12f;
-    [SerializeField] private float followDistance = 5f;
-    [SerializeField] private float retreatDistance = 1.75f;
+    [SerializeField] private float followDistance = 3f;
     [SerializeField] private float attackDistance = 3f;
     [SerializeField] private float stopTolerance = 0.1f;
     [SerializeField] private float minXLimit = -100f;
@@ -42,6 +40,7 @@ public class FinalBossController : MonoBehaviour
     private bool isAttacking;
     private bool isInHitReaction;
     private float nextAttackTime;
+    private float desiredHorizontalVelocity;
 
     private void Awake()
     {
@@ -72,87 +71,88 @@ public class FinalBossController : MonoBehaviour
     private void Update()
     {
         if (isDead || playerTarget == null)
+        {
+            desiredHorizontalVelocity = 0f;
             return;
+        }
 
-        FacePlayer();
+        float directionToPlayer = playerTarget.position.x - transform.position.x;
+        float distanceToPlayer = Mathf.Abs(directionToPlayer);
+
+        FacePlayer(directionToPlayer);
 
         if (isInHitReaction || isAttacking)
+        {
+            desiredHorizontalVelocity = 0f;
             return;
-
-        float distanceToPlayer = Mathf.Abs(playerTarget.position.x - transform.position.x);
+        }
 
         if (distanceToPlayer > activationRange)
         {
-            StopMoving();
+            desiredHorizontalVelocity = 0f;
             PlayIdle();
             return;
         }
 
-        if (distanceToPlayer <= attackDistance && Time.time >= nextAttackTime)
+        float stoppingDistance = Mathf.Max(followDistance, attackDistance);
+        if (distanceToPlayer <= stoppingDistance + stopTolerance)
         {
-            StartCoroutine(AttackRoutine());
-            return;
-        }
+            desiredHorizontalVelocity = 0f;
 
-        if (distanceToPlayer > followDistance)
-        {
-            MoveTowardsPlayer();
-        }
-        else if (distanceToPlayer < retreatDistance)
-        {
-            MoveAwayFromPlayer();
-        }
-        else
-        {
-            StopMoving();
-            PlayIdle();
-        }
-    }
+            if (distanceToPlayer <= attackDistance && Time.time >= nextAttackTime)
+            {
+                StartCoroutine(AttackRoutine());
+                return;
+            }
 
-    private void FacePlayer()
-    {
-        if (playerTarget.position.x < transform.position.x)
-        {
-            spriteRenderer.flipX = true;
-        }
-        else
-        {
-            spriteRenderer.flipX = false;
-        }
-    }
-
-    private void MoveTowardsPlayer()
-    {
-        float direction = Mathf.Sign(playerTarget.position.x - transform.position.x);
-        MoveHorizontal(direction);
-    }
-
-    private void MoveAwayFromPlayer()
-    {
-        float direction = -Mathf.Sign(playerTarget.position.x - transform.position.x);
-        MoveHorizontal(direction);
-    }
-
-    private void MoveHorizontal(float direction)
-    {
-        float targetX = transform.position.x + direction * moveSpeed * Time.deltaTime;
-        targetX = Mathf.Clamp(targetX, minXLimit, maxXLimit);
-
-        float delta = targetX - transform.position.x;
-
-        if (Mathf.Abs(delta) <= stopTolerance)
-        {
-            StopMoving();
             PlayIdle();
             return;
         }
 
-        rb.velocity = new Vector2(direction * moveSpeed, rb.velocity.y);
+        MoveTowardsPlayer(directionToPlayer);
+    }
+
+    private void FixedUpdate()
+    {
+        if (rb == null)
+            return;
+
+        float nextXPosition = Mathf.Clamp(
+            rb.position.x + desiredHorizontalVelocity * Time.fixedDeltaTime,
+            minXLimit,
+            maxXLimit);
+
+        float clampedVelocity = (nextXPosition - rb.position.x) / Time.fixedDeltaTime;
+        rb.velocity = new Vector2(clampedVelocity, rb.velocity.y);
+    }
+
+    private void FacePlayer(float directionToPlayer)
+    {
+        if (Mathf.Abs(directionToPlayer) <= stopTolerance)
+            return;
+
+        spriteRenderer.flipX = directionToPlayer < 0f;
+    }
+
+    private void MoveTowardsPlayer(float directionToPlayer)
+    {
+        float direction = Mathf.Sign(directionToPlayer);
+
+        if (Mathf.Abs(directionToPlayer) <= stopTolerance)
+        {
+            desiredHorizontalVelocity = 0f;
+            PlayIdle();
+            return;
+        }
+
+        desiredHorizontalVelocity = direction * moveSpeed;
         PlayIdle();
     }
 
     private void StopMoving()
     {
+        desiredHorizontalVelocity = 0f;
+
         if (rb != null)
         {
             rb.velocity = new Vector2(0f, rb.velocity.y);
