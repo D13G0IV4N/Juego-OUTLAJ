@@ -1627,7 +1627,7 @@ MonoBehaviour:
   playerTarget: {fileID: 1064438488}
   moveSpeed: 2.25
   activationRange: 12
-  followDistance: 5
+  followDistance: 3
   retreatDistance: 1.75
   attackDistance: 3
   stopTolerance: 0.1
