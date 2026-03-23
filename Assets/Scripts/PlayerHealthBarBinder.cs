@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+
 public class PlayerHealthBarBinder : MonoBehaviour
 {
     [SerializeField] private FinalBossPlayerHealth playerHealth;

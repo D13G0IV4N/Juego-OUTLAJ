@@ -133,6 +133,8 @@ GameObject:
   - component: {fileID: 255228951}
   - component: {fileID: 255228953}
   - component: {fileID: 255228952}
+  - component: {fileID: 255228955}
+  - component: {fileID: 255228954}
   m_Layer: 5
   m_Name: VidaJugador
   m_TagString: Untagged
@@ -197,6 +199,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 255228950}
   m_CullTransparentMesh: 1
+--- !u!114 &255228954
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 255228950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 125959de6615b2d43852af2f13389008, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerHealth: {fileID: 1064438489}
+  healthBarUI: {fileID: 255228955}
+--- !u!114 &255228955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 255228950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5958028d59415e54791189437a87349c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 255228952}
+  healthSprites:
+  - {fileID: 591351779, guid: d7096b9323af5644f950abaecdea6a84, type: 3}
+  - {fileID: 503467771, guid: d7096b9323af5644f950abaecdea6a84, type: 3}
+  - {fileID: 672019017, guid: d7096b9323af5644f950abaecdea6a84, type: 3}
+  - {fileID: 467957554, guid: d7096b9323af5644f950abaecdea6a84, type: 3}
+  - {fileID: -1100732708, guid: d7096b9323af5644f950abaecdea6a84, type: 3}
+  - {fileID: -1926455831, guid: d7096b9323af5644f950abaecdea6a84, type: 3}
+  - {fileID: 957147244, guid: d7096b9323af5644f950abaecdea6a84, type: 3}
+  - {fileID: -2036669584, guid: d7096b9323af5644f950abaecdea6a84, type: 3}
+  - {fileID: 886846501, guid: d7096b9323af5644f950abaecdea6a84, type: 3}
+  - {fileID: 1203385523, guid: d7096b9323af5644f950abaecdea6a84, type: 3}
+  - {fileID: -1400133591, guid: d7096b9323af5644f950abaecdea6a84, type: 3}
+  - {fileID: 127117240, guid: d7096b9323af5644f950abaecdea6a84, type: 3}
+  - {fileID: 1488842789, guid: d7096b9323af5644f950abaecdea6a84, type: 3}
+  - {fileID: -1348717664, guid: d7096b9323af5644f950abaecdea6a84, type: 3}
+  - {fileID: 967440342, guid: d7096b9323af5644f950abaecdea6a84, type: 3}
 --- !u!1 &364913555
 GameObject:
   m_ObjectHideFlags: 0
@@ -452,7 +497,8 @@ GameObject:
   m_Component:
   - component: {fileID: 722991931}
   - component: {fileID: 722991930}
-  - component: {fileID: 722991929}
+  - component: {fileID: 722991933}
+  - component: {fileID: 722991932}
   m_Layer: 3
   m_Name: AttackHitbox
   m_TagString: Untagged
@@ -460,20 +506,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &722991929
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 722991928}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9cc2af96336ca5d4abb2a01296ce6c54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damageCooldown: 1
-  attackWindowActiveOnStart: 0
 --- !u!61 &722991930
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -506,7 +538,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.14655185, y: -0.7877495}
+  m_Offset: {x: -0.010896742, y: -0.7877495}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -517,7 +549,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3.1050086, y: 3.6740117}
+  m_Size: {x: 3.4199057, y: 3.6740117}
   m_EdgeRadius: 0
 --- !u!4 &722991931
 Transform:
@@ -534,6 +566,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2098260671}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &722991932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 722991928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb7ed1fa5560f8d47af605c688ceb27f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 1
+  damageCooldown: 1
+  attackWindowActiveOnStart: 0
+--- !u!114 &722991933
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 722991928}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9cc2af96336ca5d4abb2a01296ce6c54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 1
+  damageCooldown: 1
+  attackWindowActiveOnStart: 0
 --- !u!1 &758110461
 GameObject:
   m_ObjectHideFlags: 0
@@ -910,6 +972,7 @@ GameObject:
   - component: {fileID: 1064438484}
   - component: {fileID: 1064438483}
   - component: {fileID: 1064438482}
+  - component: {fileID: 1064438489}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1134,6 +1197,19 @@ Transform:
   - {fileID: 855491502}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1064438489
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1064438481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6053768d59ace2b44a6fafffe16b36ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 15
 --- !u!1 &1106310132
 GameObject:
   m_ObjectHideFlags: 0
@@ -1529,8 +1605,8 @@ Transform:
   m_GameObject: {fileID: 2098260668}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.3025, y: -1.0969, z: 0}
-  m_LocalScale: {x: 0.8429, y: 0.66482115, z: 1}
+  m_LocalPosition: {x: 4.3247, y: 0.1, z: 0}
+  m_LocalScale: {x: 0.83194155, y: 0.6685212, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 722991931}
@@ -1561,7 +1637,7 @@ MonoBehaviour:
   attackWindUp: 0.2
   attackActiveDuration: 0.2
   enemyDamageWindows:
-  - {fileID: 722991929}
+  - {fileID: 722991932}
   idleStateName: BossXMan_Idle
   hitStateName: BossXMan_Hit
   attackTriggerName: Attack
@@ -1619,8 +1695,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.35860458, y: -0.71823853}
-  m_Size: {x: 3.40975, y: 4.118262}
+  m_Offset: {x: 0.31451884, y: -0.5495386}
+  m_Size: {x: 3.4979215, y: 4.3529897}
   m_Direction: 0
 --- !u!50 &2098260675
 Rigidbody2D:
