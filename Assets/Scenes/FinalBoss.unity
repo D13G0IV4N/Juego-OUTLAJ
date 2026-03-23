@@ -1605,7 +1605,7 @@ Transform:
   m_GameObject: {fileID: 2098260668}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.3247, y: 0.1, z: 0}
+  m_LocalPosition: {x: 4.08, y: -1.09, z: 0}
   m_LocalScale: {x: 0.83194155, y: 0.6685212, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1628,7 +1628,6 @@ MonoBehaviour:
   moveSpeed: 2.25
   activationRange: 12
   followDistance: 3
-  retreatDistance: 1.75
   attackDistance: 3
   stopTolerance: 0.1
   minXLimit: -100
