@@ -1,0 +1,444 @@
+fileFormatVersion: 2
+guid: fd26e99fe27c81f4ebdb73ff5f0dddbc
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: VidaEnemigo_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 295.2
+        width: 225.66667
+        height: 73.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c411e69e046eea041b5b9b510be826df
+      internalID: 1940569737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VidaEnemigo_1
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 295.2
+        width: 225.66667
+        height: 73.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 92b4758c77e75644b9fc9e3880b8ebe5
+      internalID: 1327669989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VidaEnemigo_2
+      rect:
+        serializedVersion: 2
+        x: 450
+        y: 295.2
+        width: 225.66667
+        height: 73.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3c2cf83404aac2a48b55f3d17ae4e9be
+      internalID: 1498954688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VidaEnemigo_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 222.2
+        width: 225.66667
+        height: 73.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 78822d953d694994c84d81738952f3cc
+      internalID: -1499165300
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VidaEnemigo_4
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 222.2
+        width: 225.66667
+        height: 73.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b7082a7eab2c2804e9f2a50ff2001b6a
+      internalID: -584884356
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VidaEnemigo_5
+      rect:
+        serializedVersion: 2
+        x: 450
+        y: 222.2
+        width: 225.66667
+        height: 73.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 21b452201c40be846852a658d3e7b076
+      internalID: -185473368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VidaEnemigo_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 149.2
+        width: 225.66667
+        height: 73.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d5e27236057f8ce45ae3f5b71b9400c3
+      internalID: -1433226495
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VidaEnemigo_7
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 149.2
+        width: 225.66667
+        height: 73.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 643ea941bdf5ca8428b895a763a24f86
+      internalID: 876351105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VidaEnemigo_8
+      rect:
+        serializedVersion: 2
+        x: 450
+        y: 149.2
+        width: 225.66667
+        height: 73.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f6040d47f4dc57f45986265ef17305e2
+      internalID: -184827318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VidaEnemigo_9
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 76.2
+        width: 225.66667
+        height: 73.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f01cd9ae544daca4fb19eecff718c0c8
+      internalID: -750371646
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VidaEnemigo_10
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 76.2
+        width: 225.66667
+        height: 73.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a498cc842bd6ed24d9dc359e69c8d257
+      internalID: 484881247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VidaEnemigo_11
+      rect:
+        serializedVersion: 2
+        x: 450
+        y: 76.2
+        width: 225.66667
+        height: 73.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c9a2d1554fa634b4189956f17be17981
+      internalID: -433534126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VidaEnemigo_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3.199997
+        width: 225.66667
+        height: 73.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: db2c54b1e515e034cbec46bc68bf8bdd
+      internalID: 178388861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VidaEnemigo_13
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 3.199997
+        width: 225.66667
+        height: 73.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 013d2624b06cb9a4d8556bb028b0c9af
+      internalID: 1879875432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: VidaEnemigo_14
+      rect:
+        serializedVersion: 2
+        x: 450
+        y: 3.199997
+        width: 225.66667
+        height: 73.8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0d37545440c811342b372ed034b86a19
+      internalID: -523329539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      VidaEnemigo_0: 1940569737
+      VidaEnemigo_1: 1327669989
+      VidaEnemigo_10: 484881247
+      VidaEnemigo_11: -433534126
+      VidaEnemigo_12: 178388861
+      VidaEnemigo_13: 1879875432
+      VidaEnemigo_14: -523329539
+      VidaEnemigo_2: 1498954688
+      VidaEnemigo_3: -1499165300
+      VidaEnemigo_4: -584884356
+      VidaEnemigo_5: -185473368
+      VidaEnemigo_6: -1433226495
+      VidaEnemigo_7: 876351105
+      VidaEnemigo_8: -184827318
+      VidaEnemigo_9: -750371646
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

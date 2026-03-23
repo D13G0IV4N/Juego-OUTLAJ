@@ -1,72 +1,62 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Collider2D))]
 public class PlayerAttackHitbox : MonoBehaviour
 {
-    [Header("Targets")]
     [SerializeField] private LayerMask targetLayers = ~0;
 
-    private readonly HashSet<Collider2D> hitTargets = new HashSet<Collider2D>();
-    private readonly HashSet<EnemyHealth> hitEnemyHealthTargets = new HashSet<EnemyHealth>();
-    private Collider2D hitboxCollider;
-    private bool isWindowActive;
-    private int currentDamage = 1;
-
-    private void Awake()
-    {
-        hitboxCollider = GetComponent<Collider2D>();
-        hitboxCollider.isTrigger = true;
-        hitboxCollider.enabled = false;
-    }
+    private bool attackWindowActive;
+    private int currentDamage;
+    private readonly HashSet<EnemyHealth> enemiesHitThisWindow = new HashSet<EnemyHealth>();
 
     public void StartAttackWindow(int damage)
     {
-        currentDamage = Mathf.Max(0, damage);
-        hitTargets.Clear();
-        hitEnemyHealthTargets.Clear();
-        isWindowActive = true;
-        hitboxCollider.enabled = true;
+        currentDamage = Mathf.Max(1, damage);
+        attackWindowActive = true;
+        enemiesHitThisWindow.Clear();
     }
 
     public void EndAttackWindow()
     {
-        isWindowActive = false;
-        hitboxCollider.enabled = false;
-        hitTargets.Clear();
-        hitEnemyHealthTargets.Clear();
+        attackWindowActive = false;
+        currentDamage = 0;
+        enemiesHitThisWindow.Clear();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!isWindowActive)
-        {
+        TryDamage(other);
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        TryDamage(other);
+    }
+
+    private void TryDamage(Collider2D other)
+    {
+        if (!attackWindowActive || other == null)
             return;
+
+        if (((1 << other.gameObject.layer) & targetLayers.value) == 0)
+            return;
+
+        EnemyHealth enemyHealth = other.GetComponent<EnemyHealth>();
+
+        if (enemyHealth == null)
+        {
+            enemyHealth = other.GetComponentInParent<EnemyHealth>();
         }
 
-        if ((targetLayers.value & (1 << other.gameObject.layer)) == 0)
-        {
+        if (enemyHealth == null || enemyHealth.IsDead)
             return;
-        }
 
-        EnemyHealth enemyHealth = other.GetComponentInParent<EnemyHealth>();
-        if (enemyHealth != null)
-        {
-            if (!hitEnemyHealthTargets.Add(enemyHealth))
-            {
-                return;
-            }
-
-            enemyHealth.OnPlayerAttackHit(currentDamage);
+        if (enemiesHitThisWindow.Contains(enemyHealth))
             return;
-        }
 
-        if (!hitTargets.Add(other))
-        {
-            return;
-        }
+        enemiesHitThisWindow.Add(enemyHealth);
+        enemyHealth.OnPlayerAttackHit(currentDamage);
 
-        other.SendMessage("OnPlayerAttackHit", currentDamage, SendMessageOptions.DontRequireReceiver);
-        Debug.Log($"Player attack hit: {other.name} for {currentDamage}");
+        Debug.Log($"Player hit {enemyHealth.name} for {currentDamage} damage.");
     }
 }

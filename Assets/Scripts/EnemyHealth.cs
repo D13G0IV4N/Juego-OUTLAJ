@@ -1,18 +1,19 @@
 using System;
 using UnityEngine;
 
+
 public class EnemyHealth : MonoBehaviour
 {
     [Header("Health")]
-    [SerializeField] private int maxHealth = 5;
+    [SerializeField] private int maxHealth = 15;
 
     [Header("Hit Reaction")]
     [SerializeField] private string hitTriggerName = "Hit";
-    [SerializeField] private string hitStateName = "";
+    [SerializeField] private string hitStateName = "BossXMan_Hit";
 
     [Header("Death Animation")]
-    [SerializeField] private string deathTriggerName = "Lose";
-    [SerializeField] private string deathStateName = "Enemy_Kwesi_Lose";
+    [SerializeField] private string deathTriggerName = "Die";
+    [SerializeField] private string deathStateName = "BossXMan_Death";
     [SerializeField] private float disableCollidersDelay = 0.05f;
 
     [Header("Disable On Death")]
@@ -21,10 +22,7 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField] private Rigidbody2D targetRigidbody;
 
     private Animator enemyAnimator;
-    private EnemyDetection[] detectionScripts;
-    private EnemyDamage[] damageScripts;
     private Collider2D[] autoColliders;
-
     private int currentHealth;
     private bool isDead;
 
@@ -34,6 +32,7 @@ public class EnemyHealth : MonoBehaviour
 
     public event Action<EnemyHealth> Damaged;
     public event Action<EnemyHealth> Died;
+    public event Action<int, int> HealthChanged;
 
     private void Awake()
     {
@@ -44,30 +43,28 @@ public class EnemyHealth : MonoBehaviour
             targetRigidbody = GetComponent<Rigidbody2D>();
         }
 
-        detectionScripts = GetComponentsInChildren<EnemyDetection>(true);
-        damageScripts = GetComponentsInChildren<EnemyDamage>(true);
         autoColliders = GetComponentsInChildren<Collider2D>(true);
 
         currentHealth = Mathf.Max(1, maxHealth);
+        HealthChanged?.Invoke(currentHealth, maxHealth);
     }
 
     public void OnPlayerAttackHit(int damage)
     {
         if (isDead)
-        {
             return;
-        }
 
         int finalDamage = Mathf.Max(0, damage);
         if (finalDamage <= 0)
-        {
             return;
-        }
 
         currentHealth = Mathf.Max(0, currentHealth - finalDamage);
+
         Debug.Log($"{name} took {finalDamage} damage. HP: {currentHealth}/{maxHealth}");
 
-        if (currentHealth == 0)
+        HealthChanged?.Invoke(currentHealth, maxHealth);
+
+        if (currentHealth <= 0)
         {
             Die();
             return;
@@ -77,16 +74,28 @@ public class EnemyHealth : MonoBehaviour
         Damaged?.Invoke(this);
     }
 
+    private void PlayHitReaction()
+    {
+        if (enemyAnimator == null)
+            return;
+
+        if (!string.IsNullOrWhiteSpace(hitTriggerName))
+        {
+            enemyAnimator.SetTrigger(hitTriggerName);
+        }
+
+        if (!string.IsNullOrWhiteSpace(hitStateName))
+        {
+            enemyAnimator.Play(hitStateName, 0, 0f);
+        }
+    }
+
     private void Die()
     {
         if (isDead)
-        {
             return;
-        }
 
         isDead = true;
-
-        DisableOffensiveBehaviour();
 
         if (targetRigidbody != null)
         {
@@ -98,6 +107,7 @@ public class EnemyHealth : MonoBehaviour
 
         PlayDeathAnimation();
         Died?.Invoke(this);
+        HealthChanged?.Invoke(currentHealth, maxHealth);
 
         if (disableCollidersDelay <= 0f)
         {
@@ -107,16 +117,16 @@ public class EnemyHealth : MonoBehaviour
         {
             Invoke(nameof(DisableColliders), disableCollidersDelay);
         }
+
+        DisableBehaviours();
     }
 
     private void PlayDeathAnimation()
     {
         if (enemyAnimator == null)
-        {
             return;
-        }
 
-        if (HasAnimatorTrigger(deathTriggerName))
+        if (!string.IsNullOrWhiteSpace(deathTriggerName))
         {
             enemyAnimator.SetTrigger(deathTriggerName);
         }
@@ -127,70 +137,6 @@ public class EnemyHealth : MonoBehaviour
         }
 
         Debug.Log($"{name} died.");
-    }
-
-    private void PlayHitReaction()
-    {
-        if (enemyAnimator == null)
-        {
-            return;
-        }
-
-        if (HasAnimatorTrigger(hitTriggerName))
-        {
-            enemyAnimator.SetTrigger(hitTriggerName);
-        }
-
-        if (!string.IsNullOrWhiteSpace(hitStateName))
-        {
-            enemyAnimator.Play(hitStateName, 0, 0f);
-        }
-    }
-
-    private bool HasAnimatorTrigger(string triggerName)
-    {
-        if (enemyAnimator == null || string.IsNullOrWhiteSpace(triggerName))
-        {
-            return false;
-        }
-
-        AnimatorControllerParameter[] parameters = enemyAnimator.parameters;
-        for (int i = 0; i < parameters.Length; i++)
-        {
-            if (parameters[i].type == AnimatorControllerParameterType.Trigger && parameters[i].name == triggerName)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private void DisableOffensiveBehaviour()
-    {
-        for (int i = 0; i < detectionScripts.Length; i++)
-        {
-            if (detectionScripts[i] != null)
-            {
-                detectionScripts[i].enabled = false;
-            }
-        }
-
-        for (int i = 0; i < damageScripts.Length; i++)
-        {
-            if (damageScripts[i] != null)
-            {
-                damageScripts[i].enabled = false;
-            }
-        }
-
-        for (int i = 0; i < behavioursToDisable.Length; i++)
-        {
-            if (behavioursToDisable[i] != null)
-            {
-                behavioursToDisable[i].enabled = false;
-            }
-        }
     }
 
     private void DisableColliders()
@@ -208,11 +154,28 @@ public class EnemyHealth : MonoBehaviour
             return;
         }
 
+        if (autoColliders == null)
+            return;
+
         for (int i = 0; i < autoColliders.Length; i++)
         {
             if (autoColliders[i] != null)
             {
                 autoColliders[i].enabled = false;
+            }
+        }
+    }
+
+    private void DisableBehaviours()
+    {
+        if (behavioursToDisable == null)
+            return;
+
+        for (int i = 0; i < behavioursToDisable.Length; i++)
+        {
+            if (behavioursToDisable[i] != null)
+            {
+                behavioursToDisable[i].enabled = false;
             }
         }
     }
