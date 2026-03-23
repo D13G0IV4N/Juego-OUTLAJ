@@ -1,6 +1,9 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyDamage : MonoBehaviour
+
+public class FinalBossEnemyDamage : MonoBehaviour
 {
     [Header("Damage")]
     [SerializeField] private int damage = 1;
@@ -48,33 +51,18 @@ public class EnemyDamage : MonoBehaviour
         if (!isAttackWindowActive || !canDamage || !other.CompareTag("Player"))
             return;
 
-        Debug.Log("El enemigo hizo daño");
-
-        // NIVEL 2: barra de 15 vidas
-        FinalBossPlayerHealth finalBossHealth = other.GetComponent<FinalBossPlayerHealth>();
-        if (finalBossHealth == null)
+        FinalBossPlayerHealth playerHealth = other.GetComponent<FinalBossPlayerHealth>();
+        if (playerHealth == null)
         {
-            finalBossHealth = other.GetComponentInParent<FinalBossPlayerHealth>();
+            playerHealth = other.GetComponentInParent<FinalBossPlayerHealth>();
         }
 
-        if (finalBossHealth != null && !finalBossHealth.IsDead)
-        {
-            finalBossHealth.TakeDamage(damage);
-            ApplyCooldown();
+        if (playerHealth == null || playerHealth.IsDead)
             return;
-        }
 
-        // NIVEL 1: sistema viejo de corazones
-        LifeManager lifeManager = FindObjectOfType<LifeManager>();
-        if (lifeManager != null)
-        {
-            lifeManager.LoseLife();
-            ApplyCooldown();
-        }
-    }
+        Debug.Log("Boss damaged player");
+        playerHealth.TakeDamage(damage);
 
-    private void ApplyCooldown()
-    {
         canDamage = false;
 
         if (damageCooldown <= 0f)

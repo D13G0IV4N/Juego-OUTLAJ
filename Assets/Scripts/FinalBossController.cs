@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
+
 [RequireComponent(typeof(EnemyHealth))]
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(SpriteRenderer))]
@@ -24,7 +25,7 @@ public class FinalBossController : MonoBehaviour
     [SerializeField] private float attackInterval = 1.6f;
     [SerializeField] private float attackWindUp = 0.2f;
     [SerializeField] private float attackActiveDuration = 0.2f;
-    [SerializeField] private EnemyDamage[] enemyDamageWindows;
+    [SerializeField] private FinalBossEnemyDamage[] enemyDamageWindows;
 
     [Header("Animator")]
     [SerializeField] private string idleStateName = "BossXMan_Idle";
@@ -32,48 +33,30 @@ public class FinalBossController : MonoBehaviour
     [SerializeField] private string attackTriggerName = "Attack";
     [SerializeField] private float hitRecoverDuration = 0.35f;
 
-    private Animator bossAnimator;
     private EnemyHealth enemyHealth;
-    private Rigidbody2D bossRigidbody;
+    private Animator animator;
     private SpriteRenderer spriteRenderer;
-    private Coroutine attackRoutine;
-    private bool attackInProgress;
-    private bool bossActive;
-    private float hitRecoverUntilTime;
+    private Rigidbody2D rb;
 
-    public bool IsBossActive => bossActive;
-    public bool IsAttackInProgress => attackInProgress;
+    private bool isDead;
+    private bool isAttacking;
+    private bool isInHitReaction;
+    private float nextAttackTime;
 
     private void Awake()
     {
-        bossAnimator = GetComponent<Animator>();
         enemyHealth = GetComponent<EnemyHealth>();
-        bossRigidbody = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-
-        if (playerTarget == null)
-        {
-            GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
-            if (playerObject != null)
-            {
-                playerTarget = playerObject.transform;
-            }
-        }
-
-        if (enemyDamageWindows == null || enemyDamageWindows.Length == 0)
-        {
-            enemyDamageWindows = GetComponentsInChildren<EnemyDamage>(true);
-        }
-
-        ClampCurrentPosition();
-        SetDamageWindow(false);
+        rb = GetComponent<Rigidbody2D>();
     }
 
     private void OnEnable()
     {
         if (enemyHealth != null)
         {
-            enemyHealth.Damaged += OnBossDamaged;
+            enemyHealth.Damaged += OnDamaged;
+            enemyHealth.Died += OnDied;
         }
     }
 
@@ -81,287 +64,184 @@ public class FinalBossController : MonoBehaviour
     {
         if (enemyHealth != null)
         {
-            enemyHealth.Damaged -= OnBossDamaged;
-        }
-
-        StopAttackRoutine();
-        SetDamageWindow(false);
-
-        if (bossRigidbody != null)
-        {
-            bossRigidbody.velocity = Vector2.zero;
+            enemyHealth.Damaged -= OnDamaged;
+            enemyHealth.Died -= OnDied;
         }
     }
 
     private void Update()
     {
-        if (enemyHealth != null && enemyHealth.IsDead)
+        if (isDead || playerTarget == null)
+            return;
+
+        FacePlayer();
+
+        if (isInHitReaction || isAttacking)
+            return;
+
+        float distanceToPlayer = Mathf.Abs(playerTarget.position.x - transform.position.x);
+
+        if (distanceToPlayer > activationRange)
         {
-            bossActive = false;
+            StopMoving();
+            PlayIdle();
             return;
         }
 
-        if (playerTarget == null)
+        if (distanceToPlayer <= attackDistance && Time.time >= nextAttackTime)
         {
+            StartCoroutine(AttackRoutine());
             return;
         }
-
-        Vector2 delta = playerTarget.position - transform.position;
-        float distanceToPlayer = Mathf.Abs(delta.x);
-
-        UpdateFacing(delta.x);
-
-        bool shouldBeActive = distanceToPlayer <= activationRange;
-        bossActive = shouldBeActive;
-
-        if (!bossActive)
-        {
-            StopAttackRoutine();
-            StopHorizontalMovement();
-            PlayIdleState();
-            return;
-        }
-
-        if (Time.time < hitRecoverUntilTime || IsPlayingState(hitStateName))
-        {
-            StopAttackRoutine();
-            StopHorizontalMovement();
-            return;
-        }
-
-        if (distanceToPlayer <= attackDistance)
-        {
-            StopHorizontalMovement();
-
-            if (!attackInProgress)
-            {
-                attackRoutine = StartCoroutine(AttackRoutine());
-            }
-
-            return;
-        }
-
-        if (attackInProgress)
-        {
-            StopHorizontalMovement();
-            return;
-        }
-
-        float moveDirection = 0f;
 
         if (distanceToPlayer > followDistance)
         {
-            moveDirection = Mathf.Sign(delta.x);
+            MoveTowardsPlayer();
         }
         else if (distanceToPlayer < retreatDistance)
         {
-            moveDirection = -Mathf.Sign(delta.x);
+            MoveAwayFromPlayer();
         }
-
-        if (Mathf.Abs(moveDirection) <= 0f)
+        else
         {
-            StopHorizontalMovement();
-            PlayIdleState();
+            StopMoving();
+            PlayIdle();
+        }
+    }
+
+    private void FacePlayer()
+    {
+        if (playerTarget.position.x < transform.position.x)
+        {
+            spriteRenderer.flipX = true;
+        }
+        else
+        {
+            spriteRenderer.flipX = false;
+        }
+    }
+
+    private void MoveTowardsPlayer()
+    {
+        float direction = Mathf.Sign(playerTarget.position.x - transform.position.x);
+        MoveHorizontal(direction);
+    }
+
+    private void MoveAwayFromPlayer()
+    {
+        float direction = -Mathf.Sign(playerTarget.position.x - transform.position.x);
+        MoveHorizontal(direction);
+    }
+
+    private void MoveHorizontal(float direction)
+    {
+        float targetX = transform.position.x + direction * moveSpeed * Time.deltaTime;
+        targetX = Mathf.Clamp(targetX, minXLimit, maxXLimit);
+
+        float delta = targetX - transform.position.x;
+
+        if (Mathf.Abs(delta) <= stopTolerance)
+        {
+            StopMoving();
+            PlayIdle();
             return;
         }
 
-        MoveHorizontally(moveDirection);
+        rb.velocity = new Vector2(direction * moveSpeed, rb.velocity.y);
+        PlayIdle();
+    }
+
+    private void StopMoving()
+    {
+        if (rb != null)
+        {
+            rb.velocity = new Vector2(0f, rb.velocity.y);
+        }
     }
 
     private IEnumerator AttackRoutine()
     {
-        attackInProgress = true;
-        StopHorizontalMovement();
+        isAttacking = true;
+        nextAttackTime = Time.time + attackInterval;
+        StopMoving();
 
-        if (bossAnimator != null && !string.IsNullOrWhiteSpace(attackTriggerName))
+        if (animator != null && !string.IsNullOrWhiteSpace(attackTriggerName))
         {
-            bossAnimator.SetTrigger(attackTriggerName);
+            animator.SetTrigger(attackTriggerName);
         }
 
         if (attackWindUp > 0f)
-        {
             yield return new WaitForSeconds(attackWindUp);
-        }
 
-        if (enemyHealth != null && enemyHealth.IsDead)
-        {
-            attackInProgress = false;
-            attackRoutine = null;
-            yield break;
-        }
-
-        SetDamageWindow(true);
+        SetDamageWindows(true);
 
         if (attackActiveDuration > 0f)
-        {
             yield return new WaitForSeconds(attackActiveDuration);
-        }
 
-        SetDamageWindow(false);
+        SetDamageWindows(false);
 
-        float recoveryTime = Mathf.Max(0f, attackInterval - attackWindUp - attackActiveDuration);
-        if (recoveryTime > 0f)
-        {
-            yield return new WaitForSeconds(recoveryTime);
-        }
-
-        attackInProgress = false;
-        attackRoutine = null;
-        PlayIdleState();
+        isAttacking = false;
+        PlayIdle();
     }
 
-    private void MoveHorizontally(float direction)
-    {
-        if (bossRigidbody == null)
-        {
-            return;
-        }
-
-        float nextX = Mathf.Clamp(transform.position.x + (direction * moveSpeed * Time.deltaTime), minXLimit, maxXLimit);
-        float velocityX = (nextX - transform.position.x) / Mathf.Max(Time.deltaTime, 0.0001f);
-
-        bossRigidbody.velocity = new Vector2(velocityX, bossRigidbody.velocity.y);
-
-        if (Mathf.Abs(nextX - transform.position.x) <= stopTolerance)
-        {
-            bossRigidbody.position = new Vector2(nextX, bossRigidbody.position.y);
-            bossRigidbody.velocity = new Vector2(0f, bossRigidbody.velocity.y);
-        }
-    }
-
-    private void StopHorizontalMovement()
-    {
-        if (bossRigidbody == null)
-        {
-            return;
-        }
-
-        bossRigidbody.velocity = new Vector2(0f, bossRigidbody.velocity.y);
-        ClampCurrentPosition();
-    }
-
-    private void ClampCurrentPosition()
-    {
-        if (bossRigidbody != null)
-        {
-            Vector2 clampedPosition = bossRigidbody.position;
-            clampedPosition.x = Mathf.Clamp(clampedPosition.x, minXLimit, maxXLimit);
-            bossRigidbody.position = clampedPosition;
-            return;
-        }
-
-        Vector3 clampedPosition3D = transform.position;
-        clampedPosition3D.x = Mathf.Clamp(clampedPosition3D.x, minXLimit, maxXLimit);
-        transform.position = clampedPosition3D;
-    }
-
-    private void UpdateFacing(float horizontalDelta)
-    {
-        if (Mathf.Abs(horizontalDelta) <= stopTolerance)
-        {
-            return;
-        }
-
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.flipX = horizontalDelta < 0f;
-            return;
-        }
-
-        Vector3 scale = transform.localScale;
-        scale.x = Mathf.Abs(scale.x) * (horizontalDelta < 0f ? -1f : 1f);
-        transform.localScale = scale;
-    }
-
-    private void PlayIdleState()
-    {
-        if (bossAnimator == null || string.IsNullOrWhiteSpace(idleStateName))
-        {
-            return;
-        }
-
-        AnimatorStateInfo currentState = bossAnimator.GetCurrentAnimatorStateInfo(0);
-        if (!currentState.IsName(idleStateName) && !attackInProgress)
-        {
-            bossAnimator.Play(idleStateName, 0, 0f);
-        }
-    }
-
-    private void OnBossDamaged(EnemyHealth damagedEnemy)
-    {
-        if (damagedEnemy != enemyHealth || (enemyHealth != null && enemyHealth.IsDead))
-        {
-            return;
-        }
-
-        hitRecoverUntilTime = Time.time + Mathf.Max(0f, hitRecoverDuration);
-        StopAttackRoutine();
-        StopHorizontalMovement();
-    }
-
-    private bool IsPlayingState(string stateName)
-    {
-        if (bossAnimator == null || string.IsNullOrWhiteSpace(stateName))
-        {
-            return false;
-        }
-
-        return bossAnimator.GetCurrentAnimatorStateInfo(0).IsName(stateName);
-    }
-
-    private void StopAttackRoutine()
-    {
-        if (attackRoutine != null)
-        {
-            StopCoroutine(attackRoutine);
-            attackRoutine = null;
-        }
-
-        attackInProgress = false;
-    }
-
-    private void SetDamageWindow(bool isActive)
+    private void SetDamageWindows(bool active)
     {
         if (enemyDamageWindows == null)
-        {
             return;
-        }
 
         for (int i = 0; i < enemyDamageWindows.Length; i++)
         {
-            EnemyDamage damageWindow = enemyDamageWindows[i];
-            if (damageWindow == null)
-            {
+            if (enemyDamageWindows[i] == null)
                 continue;
-            }
 
-            if (isActive)
-            {
-                damageWindow.BeginAttackWindow();
-            }
+            if (active)
+                enemyDamageWindows[i].BeginAttackWindow();
             else
-            {
-                damageWindow.EndAttackWindow();
-            }
+                enemyDamageWindows[i].EndAttackWindow();
         }
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDamaged(EnemyHealth _)
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, activationRange);
+        if (isDead)
+            return;
 
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, followDistance);
+        StartCoroutine(HitReactionRoutine());
+    }
 
-        Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(transform.position, retreatDistance);
+    private IEnumerator HitReactionRoutine()
+    {
+        isInHitReaction = true;
+        StopMoving();
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackDistance);
+        if (animator != null && !string.IsNullOrWhiteSpace(hitStateName))
+        {
+            animator.Play(hitStateName, 0, 0f);
+        }
 
-        Gizmos.color = Color.green;
-        Gizmos.DrawLine(new Vector3(minXLimit, transform.position.y - 2f, 0f), new Vector3(minXLimit, transform.position.y + 2f, 0f));
-        Gizmos.DrawLine(new Vector3(maxXLimit, transform.position.y - 2f, 0f), new Vector3(maxXLimit, transform.position.y + 2f, 0f));
+        yield return new WaitForSeconds(hitRecoverDuration);
+        isInHitReaction = false;
+        PlayIdle();
+    }
+
+    private void OnDied(EnemyHealth _)
+    {
+        isDead = true;
+        isAttacking = false;
+        isInHitReaction = false;
+        StopMoving();
+        SetDamageWindows(false);
+    }
+
+    private void PlayIdle()
+    {
+        if (animator == null || string.IsNullOrWhiteSpace(idleStateName) || isDead)
+            return;
+
+        AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
+        if (!state.IsName(idleStateName) && !isAttacking && !isInHitReaction)
+        {
+            animator.Play(idleStateName, 0, 0f);
+        }
     }
 }
